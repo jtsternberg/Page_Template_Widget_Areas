@@ -1,17 +1,16 @@
 <?php
 
-
 class Page_Template_Widget_Areas {
 
 	protected static $single_instance = null;
-	protected $widget_areas = array();
-	public $default_number_of_widget_area_rows = 2;
-	public $sidebar_default_args = array(
+	public static $default_number_of_widget_area_rows = 2;
+	public static $sidebar_default_args = array(
 		'before_widget' => '<div id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</div>',
 		'before_title'  => '<h4 class="widget-title widgettitle">',
 		'after_title'   => '</h4>',
 	);
+	protected $widget_areas = array();
 
 	/**
 	 * Creates or returns an instance of this class.
@@ -67,42 +66,69 @@ class Page_Template_Widget_Areas {
 
 			if ( $number_of_widget_area_rows > 1 ) {
 				for ( $i = 1; $i < ( $number_of_widget_area_rows + 1 ); $i++ ) {
-					$sb_args = array_merge( $this->sidebar_default_args, array(
+					$this->register_widget_area( array(
 						'name' => '| Page Widget Area, Row '. $i,
 						'id'   => 'sb-'. $page->post_name . '-' . $i,
 					) );
-					$this->widget_areas[] = $sb_args['id'];
-					register_sidebar( $sb_args );
 				}
 			} else {
-				register_sidebar( array_merge( $this->sidebar_default_args, array(
+				$this->register_widget_area( array(
 					'name' => '| Page Widget Area',
-					'id'   => 'sb-'. $page->post_name,
-				) ) );
+					'id'   => 'sb-'. $page->post_name . '-1',
+				) );
 			}
 		}
+	}
+
+	protected function register_widget_area( $args ) {
+		$this->widget_areas[] = $args['id'];
+		register_sidebar( array_merge( $this->sidebar_default_args(), $args ) );
 	}
 
 	public static function get( $post_id = 0 ) {
 		$post_id = $post_id ? $post_id : get_the_ID();
+
 		ob_start();
-		self::output( $post_id );
+
+		do_action( 'page_template_widget_areas_before_output', $post_id );
+
+		$page = get_post( $post_id );
+		if ( isset( $page->ID ) ) {
+			$number_of_widget_area_rows = self::get_page_widget_area_rows( $page->ID );
+
+			if ( $number_of_widget_area_rows > 1 ) {
+				for ( $i = 1; $i < ( $number_of_widget_area_rows + 1 ); $i++ ) {
+					self::do_widget_area( array(
+						'post_id' => $post_id,
+						'row'     => $i,
+						'id'      => 'sb-'. $page->post_name . '-' . $i,
+					) );
+				}
+			} else {
+				self::do_widget_area( array(
+					'post_id' => $post_id,
+					'row'     => $i,
+					'id'      => 'sb-'. $page->post_name . '-1',
+				) );
+			}
+		}
+
+		do_action( 'page_template_widget_areas_after_output', $post_id );
+
 		// grab sidebar output from the output buffer
-		return ob_get_clean();
+		$output = ob_get_clean();
+
+		return apply_filters( 'page_template_widget_areas_output', $output, $post_id );
+	}
+
+	protected static function do_widget_area( $args ) {
+		do_action( 'page_template_widget_areas_before_area', $args );
+		dynamic_sidebar( $args['id'] );
+		do_action( 'page_template_widget_areas_after_area', $args );
 	}
 
 	public static function output( $post_id = 0 ) {
-		$post_id = $post_id ? $post_id : get_the_ID();
-		$page = get_post( $post_id );
-		$number_of_widget_area_rows = self::get_page_widget_area_rows( $page->ID );
-
-		if ( $number_of_widget_area_rows > 1 ) {
-			for ( $i = 1; $i < ( $number_of_widget_area_rows + 1 ); $i++ ) {
-				dynamic_sidebar( 'sb-'. $page->post_name . '-' . $i );
-			}
-		} else {
-			dynamic_sidebar( 'sb-'. $page->post_name );
-		}
+		echo self::get( $post_id );
 	}
 
 	public static function widgetized_template_pages() {
@@ -131,9 +157,14 @@ class Page_Template_Widget_Areas {
 
 	public static function get_page_widget_area_rows( $post_id = 0 ) {
 		$post_id = $post_id ? $post_id : get_the_ID();
+
 		$number_of_widget_area_rows = absint( get_post_meta( $post_id, 'widget_area_rows', 1 ) );
 
-		return $number_of_widget_area_rows ? $number_of_widget_area_rows : $this->default_number_of_widget_area_rows;
+		$default_number_of_widget_area_rows = apply_filters( 'page_template_widget_areas_default_rows', self::$default_number_of_widget_area_rows );
+
+		return $number_of_widget_area_rows
+			? $number_of_widget_area_rows
+			: $default_number_of_widget_area_rows;
 	}
 
 	public static function page_is_widget_template( $post_id = 0 ) {
@@ -157,23 +188,27 @@ class Page_Template_Widget_Areas {
 		return $this->widget_areas;
 	}
 
-	public static function before_content( $content ) {
+	public static function sidebar_default_args() {
+		return apply_filters( 'page_template_widget_areas_sidebar_defaults', self::$sidebar_default_args );
+	}
+
+	public static function do_before_content( $content ) {
 		$sidebars = self::get();
 		return $sidebars . $content;
 	}
 
-	public static function after_content( $content ) {
+	public static function do_after_content( $content ) {
 		$sidebars = self::get();
 		return $content . $sidebars;
 	}
 
-	public static function replace_content() {
+	public static function do_replace_content() {
 		return self::get();
 	}
 
 }
 
-add_action( 'theme_setup', array( 'Page_Template_Widget_Areas', 'get_instance' ) );
-// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'before_content' ) );
-// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'after_content' ) );
-// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'replace_content' ) );
+add_action( 'after_setup_theme', array( 'Page_Template_Widget_Areas', 'get_instance' ) );
+// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_before_content' ) );
+// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_after_content' ) );
+// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ) );
