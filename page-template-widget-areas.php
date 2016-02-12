@@ -148,9 +148,13 @@ class Page_Template_Widget_Areas {
 			return;
 		}
 		// We only want these widget areas to show in the customizer (and not clutter the widgets screen)
-		foreach ( $this->widget_areas as $widget_area ) {
+		foreach ( $this->registered_widget_areas() as $widget_area ) {
 			unregister_sidebar( $widget_area );
 		}
+	}
+
+	public function registered_widget_areas() {
+		return $this->widget_areas;
 	}
 
 	public static function before_content( $content ) {
