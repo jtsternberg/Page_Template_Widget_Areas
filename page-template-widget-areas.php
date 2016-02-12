@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Utility class added to themes to allow a "Widget Area" page template.
+ * The widget area can be output before, after, or replace the content.
+ * Or really, can be output anywhere in the template.
+ *
+ * Examples for before, after and replacing content.
+ * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_before_content' ) );
+ * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_after_content' ) );
+ * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ) );
+ *
+ */
 class Page_Template_Widget_Areas {
 
 	protected static $single_instance = null;
