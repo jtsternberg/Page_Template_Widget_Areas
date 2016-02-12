@@ -10,6 +10,9 @@
  * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ) );
  *
  *
+ * For convenience, a link to edit the widgets in the customizer will be added to the
+ * page edit screen, if the page has this template specified.
+ *
  * This utility class removes these page-specific registered sidebars/widget areas
  * from the WordPress admin widget management interface to keep from cluttering it up,
  * and in favor of using the customizer for managing them.
