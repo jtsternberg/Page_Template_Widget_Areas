@@ -3,6 +3,7 @@
 
 class Page_Template_Widget_Areas {
 
+	protected static $single_instance = null;
 	protected $widget_areas = array();
 	public $default_number_of_widget_area_rows = 2;
 	public $sidebar_default_args = array(
@@ -11,7 +12,6 @@ class Page_Template_Widget_Areas {
 		'before_title'  => '<h4 class="widget-title widgettitle">',
 		'after_title'   => '</h4>',
 	);
-	protected static $single_instance = null;
 
 	/**
 	 * Creates or returns an instance of this class.
