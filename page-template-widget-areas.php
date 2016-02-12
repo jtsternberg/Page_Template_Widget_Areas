@@ -23,7 +23,8 @@
  *     )
  * );
  *
- * @version  1.0.0
+ * @version 1.0.0
+ * @link    https://gist.github.com/jtsternberg/7dc6094f1d4416ae447f
  *
  */
 class Page_Template_Widget_Areas {
