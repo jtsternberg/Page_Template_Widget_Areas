@@ -9,6 +9,22 @@
  * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_after_content' ) );
  * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ) );
  *
+ *
+ * This utility class removes these page-specific registered sidebars/widget areas
+ * from the WordPress admin widget management interface to keep from cluttering it up,
+ * and in favor of using the customizer for managing them.
+ *
+ * If you WANT these to still show in the admin widget management interface:
+ * remove_action(
+ *     'sidebar_admin_setup',
+ *     array(
+ *         Page_Template_Widget_Areas::get_instance(),
+ *         'deregister_sidebars_on_widget_admin'
+ *     )
+ * );
+ *
+ * @version  1.0.0
+ *
  */
 class Page_Template_Widget_Areas {
 
