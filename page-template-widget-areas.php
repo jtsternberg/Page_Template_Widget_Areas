@@ -199,6 +199,7 @@ class Page_Template_Widget_Areas {
 
 	public static function page_is_widget_template( $post_id = 0 ) {
 		$post_id = $post_id ? $post_id : get_the_ID();
+		// This could easily just check for the existence of some meta value (to enable with a checkbox)
 		$page_template = get_page_template_slug( $post_id );
 		return 'template-widget-area.php' === $page_template;
 	}
