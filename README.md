@@ -14,7 +14,8 @@ add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_before_conte
 add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_after_content' ) );
 ```
 ```php
-add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ) );
+// Run this late so no other plugin tries to add things.
+add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ), 999 );
 ```
 
 For convenience, a link to edit the widgets in the customizer will be added to the

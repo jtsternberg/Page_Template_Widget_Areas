@@ -7,7 +7,7 @@
  * Examples for before, after and replacing content.
  * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_before_content' ) );
  * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_after_content' ) );
- * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ) );
+ * add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ), 999 );
  *
  *
  * For convenience, a link to edit the widgets in the customizer will be added to the
@@ -242,4 +242,4 @@ class Page_Template_Widget_Areas {
 add_action( 'after_setup_theme', array( 'Page_Template_Widget_Areas', 'get_instance' ) );
 // add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_before_content' ) );
 // add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_after_content' ) );
-// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ) );
+// add_filter( 'the_content', array( 'Page_Template_Widget_Areas', 'do_replace_content' ), 999 );
