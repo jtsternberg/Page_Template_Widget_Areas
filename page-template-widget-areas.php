@@ -27,7 +27,7 @@
  * );
  *
  * @version 1.0.0
- * @link    https://gist.github.com/jtsternberg/7dc6094f1d4416ae447f
+ * @link    https://github.com/jtsternberg/Page_Template_Widget_Areas
  *
  */
 class Page_Template_Widget_Areas {
